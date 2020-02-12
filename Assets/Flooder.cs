@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using TMPro;
 
 public class Flooder : MonoBehaviour
@@ -13,6 +14,11 @@ public class Flooder : MonoBehaviour
     public int numberOfObjects = 1000;
     public float timeBetweenSpawns;
     public Transform sphere;
+
+    [System.Serializable]
+    public class OnBallSpawn : UnityEvent<bool>{};
+
+    public OnBallSpawn onBallSpawn;
 
     public bool pausedFlooding = false;
 
@@ -65,6 +71,10 @@ public class Flooder : MonoBehaviour
                 Instantiate(sphere, firstPoint + (Vector3.right * x) + (Vector3.forward * z), Quaternion.identity);
                 count++;
 
+                bool isEven = (count % 2 == 0);
+
+                onBallSpawn.Invoke(isEven);
+
                 countText.text = count.ToString();
 
                 do
@@ -78,6 +88,11 @@ public class Flooder : MonoBehaviour
     public void ToggleFlooding()
     {
         pausedFlooding = !pausedFlooding;
+    }
+
+    public void SetRate(float newRate)
+    {
+        timeBetweenSpawns = newRate;
     }
     #endregion
 
