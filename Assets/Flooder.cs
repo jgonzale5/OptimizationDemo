@@ -1,14 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Events;
+using UnityEngine.UI;
 using TMPro;
 
 public class Flooder : MonoBehaviour
 {
     #region SPOILER
-    public Text countText;
+    public TextMeshProUGUI countText;
     public Vector3 centerPoint;
     public float distanceBetweenObjects;
     public int numberOfObjects = 1000;
@@ -16,9 +16,9 @@ public class Flooder : MonoBehaviour
     public Transform sphere;
 
     [System.Serializable]
-    public class OnBallSpawn : UnityEvent<bool>{};
-
-    public OnBallSpawn onBallSpawn;
+    public class OnSpawn : UnityEvent<bool> { };
+    public OnSpawn onSphereSpawn;
+    //public UnityEvent OnSpawn;
 
     public bool pausedFlooding = false;
 
@@ -26,6 +26,7 @@ public class Flooder : MonoBehaviour
     {
         StartCoroutine(ProgressiveFlood());
         //Flood();
+        //StartCoroutine(startDelay(2f));
     }
 
     void Flood()
@@ -41,9 +42,9 @@ public class Flooder : MonoBehaviour
 
         int count = 0;
 
-        for (int x = 0; x < columns && count < numberOfObjects; x++)
+        for (int x = 0; x < columns && count <= numberOfObjects; x++)
         {
-            for (int z = 0; z < rows && count < numberOfObjects; z++)
+            for (int z = 0; z < rows && count <= numberOfObjects; z++)
             {
                 Instantiate(sphere, firstPoint + (Vector3.right * x) + (Vector3.forward * z), Quaternion.identity);
                 count++;
@@ -51,11 +52,17 @@ public class Flooder : MonoBehaviour
         }
     }
 
+    IEnumerator startDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        Flood();
+    }
+
     IEnumerator ProgressiveFlood()
     {
         int columns, rows;
 
-        columns = Mathf.RoundToInt(Mathf.Sqrt(numberOfObjects));
+        columns = Mathf.CeilToInt(Mathf.Sqrt(numberOfObjects));
         rows = columns;
 
         Vector3 firstPoint = new Vector3(centerPoint.x - ((columns - 1) / 2),
@@ -73,7 +80,7 @@ public class Flooder : MonoBehaviour
 
                 bool isEven = (count % 2 == 0);
 
-                onBallSpawn.Invoke(isEven);
+                onSphereSpawn.Invoke(isEven);
 
                 countText.text = count.ToString();
 
