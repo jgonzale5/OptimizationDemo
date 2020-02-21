@@ -9,6 +9,7 @@ public class LookAtMouse : MonoBehaviour
     public Transform laserPrefab;
     public LayerMask raycastMask;
     Transform laserDot;
+    Vector3 currentPoint;
 
     private void Awake()
     {
@@ -35,13 +36,13 @@ public class LookAtMouse : MonoBehaviour
 
     void LaserPointer()
     {   
-        Vector3 mousePoint;
 
         RaycastHit hit;
         Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, raycastMask);
 
-        mousePoint = hit.point;
+        currentPoint = hit.point;
 
-        laserDot.position = mousePoint;
+        laserDot.position = Vector3.Lerp(laserDot.position, currentPoint, 0.5f);
+        //laserDot.position = mousePoint;
     }
 }

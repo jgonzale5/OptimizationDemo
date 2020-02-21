@@ -14,6 +14,7 @@ public class Flooder : MonoBehaviour
     public int numberOfObjects = 1000;
     public float timeBetweenSpawns;
     public Transform sphere;
+    public Transform explosionPrefab;
 
     [System.Serializable]
     public class BoolEvent : UnityEvent<bool> { };
@@ -81,6 +82,7 @@ public class Flooder : MonoBehaviour
             for (int z = 0; z < rows && count < numberOfObjects; z++)
             {
                 Instantiate(sphere, firstPoint + (Vector3.right * x) + (Vector3.forward * z), Quaternion.identity);
+                //Instantiate(explosionPrefab, firstPoint + (Vector3.right * x) + (Vector3.forward * z), Quaternion.identity);
                 count++;
 
                 bool isEven = (count % 2 == 0);
